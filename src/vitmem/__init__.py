@@ -1,5 +1,4 @@
 import os
-import ssl
 import torch
 from PIL import Image
 from torchvision import transforms
@@ -29,7 +28,7 @@ transform = transforms.Compose([
 
 class ViTMem:
     def __init__(self):
-        model_url = "https://brainpriority.com/models/vitmem_base_patch16_224_miil_v1-f580d24a.pth"
+        model_url = "https://huggingface.co/brainpriority/vitmem/resolve/main/vitmem_base_patch16_224_miil_v1-f580d24a.pth"
         model_filename = os.path.basename(model_url)
         hub_path = torch.hub.get_dir()
         checkpoints_path = os.path.join(hub_path, "checkpoints")
@@ -40,8 +39,7 @@ class ViTMem:
             print("Will now download required model.")
             print("Model will be located in:", os.path.normpath(model_path))
         
-        ssl._create_default_https_context = ssl._create_unverified_context
-        model_state = torch.utils.model_zoo.load_url(model_url, map_location='cpu', check_hash=True)
+        model_state = torch.hub.load_state_dict_from_url(model_url, map_location='cpu', check_hash=True)
         self.model = ViTMem_model()
         self.model.load_state_dict(model_state)
         self.model.eval()
